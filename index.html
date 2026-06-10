@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse of Humanity — How Are You Feeling?</title>
+  <meta name="description" content="Share how you feel about the world — from apocalyptic dread to pure optimism. See where humanity stands today." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ========== AUTH SCREEN ========== -->
+  <div id="auth-screen" class="screen active">
+    <div class="auth-container">
+      <div class="logo">
+        <div class="logo-icon">🌍</div>
+        <h1>Pulse of Humanity</h1>
+        <p class="tagline">Where does the world stand today?</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tab-login" class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+        <button id="tab-signup" class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+      </div>
+
+      <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+        <div class="input-group">
+          <label for="login-username">Username</label>
+          <input id="login-username" type="text" placeholder="Enter your username" required autocomplete="username" />
+        </div>
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="Enter your password" required autocomplete="current-password" />
+        </div>
+        <div id="login-error" class="form-error hidden"></div>
+        <button type="submit" class="btn-primary" id="login-btn">
+          <span>Sign In</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <form id="signup-form" class="auth-form hidden" onsubmit="handleSignup(event)">
+        <div class="input-group">
+          <label for="signup-username">Choose a Username</label>
+          <input id="signup-username" type="text" placeholder="Pick something memorable" required autocomplete="username" />
+        </div>
+        <div class="input-group">
+          <label for="signup-displayname">Display Name</label>
+          <input id="signup-displayname" type="text" placeholder="How should we call you?" required />
+        </div>
+        <div class="input-group">
+          <label for="signup-password">Create Password</label>
+          <input id="signup-password" type="password" placeholder="Make it strong" required autocomplete="new-password" />
+        </div>
+        <div id="signup-error" class="form-error hidden"></div>
+        <button type="submit" class="btn-primary" id="signup-btn">
+          <span>Join the Conversation</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== MAIN APP ========== -->
+  <div id="app-screen" class="screen">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="header-logo">
+          <span class="logo-emoji">🌍</span>
+          <span class="logo-text">Pulse of Humanity</span>
+        </div>
+        <div class="header-right">
+          <div class="user-badge" id="user-badge">
+            <div class="user-avatar" id="user-avatar-display"></div>
+            <span id="user-display-name"></span>
+          </div>
+          <button class="btn-logout" id="logout-btn" onclick="handleLogout()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Submission Panel -->
+    <main class="app-main">
+      <section class="submit-section">
+        <div class="section-header">
+          <h2>How do you feel about the world right now?</h2>
+          <p>Drag the slider, share your perspective — honest and raw.</p>
+        </div>
+
+        <!-- Mood Slider -->
+        <div class="slider-container">
+          <div class="slider-labels">
+            <div class="slider-label apocalyptic">
+              <span class="label-emoji">💀</span>
+              <span class="label-text">Apocalyptic</span>
+            </div>
+            <div class="slider-label optimistic">
+              <span class="label-text">Optimistic</span>
+              <span class="label-emoji">🌟</span>
+            </div>
+          </div>
+
+          <div class="slider-track-wrapper">
+            <div class="slider-track-bg"></div>
+            <input
+              type="range"
+              id="mood-slider"
+              min="0"
+              max="100"
+              value="50"
+              class="mood-slider"
+              oninput="updateSlider(this.value)"
+            />
+            <div class="slider-glow" id="slider-glow"></div>
+          </div>
+
+          <div class="mood-indicator" id="mood-indicator">
+            <div class="mood-emoji" id="mood-emoji">😐</div>
+            <div class="mood-label" id="mood-label">Uncertain</div>
+            <div class="mood-value" id="mood-value">50%</div>
+          </div>
+        </div>
+
+        <!-- Thought Input -->
+        <div class="thought-section">
+          <label for="thought-input" class="thought-label">Share your perspective <span class="optional">(optional)</span></label>
+          <textarea
+            id="thought-input"
+            class="thought-textarea"
+            placeholder="What's making you feel this way? Share your thoughts, fears, or hopes with the world..."
+            maxlength="500"
+            oninput="updateCharCount(this)"
+          ></textarea>
+          <div class="textarea-footer">
+            <span class="char-count" id="char-count">0 / 500</span>
+          </div>
+        </div>
+
+        <button class="btn-submit" id="submit-btn" onclick="submitEntry()">
+          <span id="submit-text">Submit My Pulse</span>
+          <svg id="submit-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </section>
+
+      <!-- Community Stats -->
+      <section class="stats-section" id="stats-section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-label">Total Pulses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-avg-emoji">—</div>
+            <div class="stat-label">World Mood</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-optimism">—</div>
+            <div class="stat-label">Optimism Score</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="stat-today">0</div>
+            <div class="stat-label">Today's Pulses</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- World Mood Bar -->
+      <section class="world-mood-section" id="world-mood-section">
+        <div class="world-mood-header">
+          <h3>🌐 The World's Current Pulse</h3>
+          <span class="world-mood-score" id="world-mood-score"></span>
+        </div>
+        <div class="world-mood-bar-wrapper">
+          <div class="world-mood-bar-track">
+            <div class="world-mood-bar-fill" id="world-mood-fill"></div>
+            <div class="world-mood-bar-marker" id="world-mood-marker"></div>
+          </div>
+          <div class="world-bar-labels">
+            <span>💀 Apocalyptic</span>
+            <span>🌟 Optimistic</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feed -->
+      <section class="feed-section">
+        <div class="feed-header">
+          <h3>🗣️ What the World is Saying</h3>
+          <div class="feed-filters">
+            <button class="filter-btn active" id="filter-all" onclick="filterFeed('all', this)">All</button>
+            <button class="filter-btn" id="filter-apocalyptic" onclick="filterFeed('apocalyptic', this)">💀 Apocalyptic</button>
+            <button class="filter-btn" id="filter-neutral" onclick="filterFeed('neutral', this)">😐 Neutral</button>
+            <button class="filter-btn" id="filter-optimistic" onclick="filterFeed('optimistic', this)">🌟 Optimistic</button>
+          </div>
+        </div>
+        <div class="feed-list" id="feed-list">
+          <div class="feed-empty" id="feed-empty">
+            <div class="feed-empty-icon">🌊</div>
+            <p>No pulses yet. Be the first to share!</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase Compat SDK (works with file:// and any server) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
